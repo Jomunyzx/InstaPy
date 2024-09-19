@@ -2,18 +2,15 @@ import os
 import time
 from instagrapi import Client
 
-# Function to get environment variables or prompt user for input
 def get_env_variable(var_name, prompt):
     value = os.getenv(var_name)
     if not value:
         value = input(prompt)
     return value
 
-# Get credentials from environment variables or user input
 USERNAME = get_env_variable('INSTA_USERNAME', 'Enter your Instagram username: ')
 PASSWORD = get_env_variable('INSTA_PASSWORD', 'Enter your Instagram password: ')
 
-# Login to Instagram
 def login_to_instagram(username, password):
     try:
         api = Client()
@@ -24,7 +21,6 @@ def login_to_instagram(username, password):
         print(f"An error occurred during login: {e}")
         return None
 
-# Show DMs
 def show_dms(api):
     try:
         threads = api.direct_threads()
@@ -36,8 +32,6 @@ def show_dms(api):
         print(f"An error occurred while fetching DMs: {e}")
         return []
 
-# View messages from a user with live updates
-# View messages from a user with live updates
 def view_messages(api, thread_id):
     seen_messages = set()
     try:
@@ -53,18 +47,17 @@ def view_messages(api, thread_id):
             if new_messages:
                 for msg in reversed(new_messages):
                     print(msg)
-            time.sleep(0.5)  # Wait for 2 seconds before checking for new messages
+            time.sleep(0.5)  
     except Exception as e:
         print(f"An error occurred while fetching messages: {e}")
 
-# Send a message
 def send_message(api, thread_id, message):
     try:
         api.direct_send(message, thread_ids=[thread_id])
     except Exception as e:
         print(f"An error occurred while sending the message: {e}")
 
-# Download media from messages
+
 def download_media(api, thread_id, download_path='./downloads'):
     try:
         thread = api.direct_thread(thread_id)
@@ -80,7 +73,7 @@ def download_media(api, thread_id, download_path='./downloads'):
     except Exception as e:
         print(f"An error occurred while downloading media: {e}")
 
-# Main function to interact with the user
+
 def main():
     api = login_to_instagram(USERNAME, PASSWORD)
     if api:
@@ -89,7 +82,6 @@ def main():
             choice = int(input("Select a user by number to view messages: ")) - 1
             if 0 <= choice < len(threads):
                 thread_id = threads[choice].id
-                # Start live updating messages in a separate thread
                 import threading
                 threading.Thread(target=view_messages, args=(api, thread_id), daemon=True).start()
                 while True:
