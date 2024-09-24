@@ -1,5 +1,4 @@
-import os
-import time
+import os, time, requests, base64
 from instagrapi import Client
 
 def get_env_variable(var_name, prompt):
@@ -24,10 +23,19 @@ def login_to_instagram(username, password):
 def show_dms(api):
     try:
         threads = api.direct_threads()
+        if not threads:
+            print("No threads found.")
+            return []
         for i, thread in enumerate(threads):
-            users = ", ".join([user.username for user in thread.users])
-            print(f"{i + 1}: {users}")
+            if thread and hasattr(thread, 'users') and thread.users:
+                users = ", ".join([user.username for user in thread.users])
+                print(f"{i + 1}: {users}")
+            else:
+                print(f"{i + 1}: [Unknown Users]")
         return threads
+    except AttributeError as ae:
+        print(f"An attribute error occurred: {ae}")
+        return []
     except Exception as e:
         print(f"An error occurred while fetching DMs: {e}")
         return []
@@ -37,6 +45,9 @@ def view_messages(api, thread_id):
     try:
         while True:
             thread = api.direct_thread(thread_id)
+            if not thread or not hasattr(thread, 'messages'):
+                print("No thread or messages found.")
+                break
             new_messages = []
             for message in thread.messages:
                 if message.id not in seen_messages:
@@ -47,7 +58,7 @@ def view_messages(api, thread_id):
             if new_messages:
                 for msg in reversed(new_messages):
                     print(msg)
-            time.sleep(0.5)  
+            time.sleep(0.5)
     except Exception as e:
         print(f"An error occurred while fetching messages: {e}")
 
@@ -57,10 +68,12 @@ def send_message(api, thread_id, message):
     except Exception as e:
         print(f"An error occurred while sending the message: {e}")
 
-
 def download_media(api, thread_id, download_path='./downloads'):
     try:
         thread = api.direct_thread(thread_id)
+        if not thread or not hasattr(thread, 'messages'):
+            print("No thread or messages found.")
+            return
         os.makedirs(download_path, exist_ok=True)
         for message in thread.messages:
             if message.media:
@@ -73,22 +86,26 @@ def download_media(api, thread_id, download_path='./downloads'):
     except Exception as e:
         print(f"An error occurred while downloading media: {e}")
 
-
 def main():
     api = login_to_instagram(USERNAME, PASSWORD)
     if api:
         threads = show_dms(api)
         if threads:
-            choice = int(input("Select a user by number to view messages: ")) - 1
-            if 0 <= choice < len(threads):
-                thread_id = threads[choice].id
-                import threading
-                threading.Thread(target=view_messages, args=(api, thread_id), daemon=True).start()
-                while True:
-                    message = input("> ")
-                    if message.lower() == 'exit':
-                        break
-                    send_message(api, thread_id, message)
+            try:
+                choice = int(input("Select a user by number to view messages: ")) - 1
+                if 0 <= choice < len(threads):
+                    thread_id = threads[choice].id
+                    import threading
+                    threading.Thread(target=view_messages, args=(api, thread_id), daemon=True).start()
+                    while True:
+                        message = input("> ")
+                        if message.lower() == 'exit':
+                            break
+                        send_message(api, thread_id, message)
+            except IndexError as ie:
+                print(f"Invalid selection: {ie}")
+            except ValueError:
+                print("Please enter a valid number.")
 
 if __name__ == '__main__':
     main()
