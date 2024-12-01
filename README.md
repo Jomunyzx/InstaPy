@@ -1,6 +1,6 @@
-# ILikeMinors - Instagram Login and Messaging Automation
+# InstaPy - Instagram Login and Messaging Automation
 
-"ILikeMinors" is a Python script designed for automating Instagram login, viewing and interacting with direct messages (DMs), and downloading media from conversations.
+"InstaPy" is a Python script designed for automating Instagram login, viewing and interacting with direct messages (DMs), and downloading media from conversations.
 
 ## Features
 - **Login to Instagram**: Log in securely using your Instagram credentials.
