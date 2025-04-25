@@ -1,23 +1,21 @@
-# InstaPy - Instagram Login and Messaging Automation
+# 📩 Instagram DM CLI Tool
 
-"InstaPy" is a Python script designed for automating Instagram login, viewing and interacting with direct messages (DMs), and downloading media from conversations.
+A simple command-line tool for **automating Instagram Direct Messages** using the [instagrapi](https://github.com/adw0rd/instagrapi) client. This tool allows you to log in, view your message threads, read messages, send new ones, and download media from DMs — all from the terminal.
 
-## Features
-- **Login to Instagram**: Log in securely using your Instagram credentials.
-- **View Direct Messages**: Retrieve and display DM threads, including the users involved.
-- **Send Messages**: Send messages to a selected DM thread.
-- **Download Media**: Automatically download media files from conversations.
+This script is designed to support **Instagram messaging automation workflows**, enabling efficient interaction with users directly from your local environment.
 
-## Prerequisites
+## 🚀 Features
 
-Before running this script, ensure you have the following installed:
+- Login securely using environment variables or prompt
+- Fetch and display direct message threads
+- View messages in real time
+- Send messages to a selected thread
+- Download media content from message threads
 
-- **Python 3.x**
-- **Required Python packages**:
-  - `instagrapi`
-  - `requests`
+## 🛠️ Installation
 
-You can install the required packages using `pip`:
-
-```bash
-pip install instagrapi requests
+1. **Clone the repository**
+   ```
+   git clone https://github.com/Jomunyzx/InstaPy.git
+   cd InstaPy
+   ```
